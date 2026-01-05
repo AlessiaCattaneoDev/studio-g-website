@@ -3,17 +3,73 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef, useState } from "react";
-import { Phone, Mail, MapPin, Globe, Send, CheckCircle, Linkedin } from "lucide-react";
+import { Phone, Mail, MapPin, Globe, Send, Linkedin, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 
 export default function Contact() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    company: "",
+    subject: "",
+    message: "",
+  });
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitted(true);
-    setTimeout(() => setIsSubmitted(false), 3000);
+    setStatus("loading");
+    setErrorMessage("");
+
+    try {
+      // Send directly to Formspree
+      const FORMSPREE_ID = "xkogabqg"; 
+      
+      const response = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          company: formData.company || "Non specificata",
+          subject: formData.subject,
+          message: formData.message,
+          _subject: `[Sito Web Studio G] ${formData.subject}`,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Errore durante l'invio");
+      }
+
+      setStatus("success");
+      setFormData({
+        name: "",
+        email: "",
+        company: "",
+        subject: "",
+        message: "",
+      });
+
+      // Reset success message after 5 seconds
+      setTimeout(() => setStatus("idle"), 5000);
+    } catch (error) {
+      setStatus("error");
+      setErrorMessage(error instanceof Error ? error.message : "Errore durante l'invio del messaggio");
+      setTimeout(() => setStatus("idle"), 5000);
+    }
   };
 
   const contactInfo = [
@@ -149,6 +205,8 @@ export default function Contact() {
                     id="name"
                     name="name"
                     required
+                    value={formData.name}
+                    onChange={handleChange}
                     className="input-field text-sm sm:text-base"
                     placeholder="Il tuo nome"
                   />
@@ -165,6 +223,8 @@ export default function Contact() {
                     id="email"
                     name="email"
                     required
+                    value={formData.email}
+                    onChange={handleChange}
                     className="input-field text-sm sm:text-base"
                     placeholder="la.tua@email.com"
                   />
@@ -181,6 +241,8 @@ export default function Contact() {
                   type="text"
                   id="company"
                   name="company"
+                  value={formData.company}
+                  onChange={handleChange}
                   className="input-field text-sm sm:text-base"
                   placeholder="Nome azienda (opzionale)"
                 />
@@ -197,6 +259,8 @@ export default function Contact() {
                   id="subject"
                   name="subject"
                   required
+                  value={formData.subject}
+                  onChange={handleChange}
                   className="input-field text-sm sm:text-base"
                   placeholder="Di cosa hai bisogno?"
                 />
@@ -213,21 +277,39 @@ export default function Contact() {
                   name="message"
                   required
                   rows={4}
+                  value={formData.message}
+                  onChange={handleChange}
                   className="input-field resize-none text-sm sm:text-base sm:rows-5"
                   placeholder="Descrivi il tuo progetto o richiesta..."
                 />
               </div>
               <motion.button
                 type="submit"
-                className="btn-primary w-full flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-lg py-3 sm:py-4"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                disabled={isSubmitted}
+                className={`w-full flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-lg py-3 sm:py-4 rounded-lg font-medium transition-all duration-300 ${
+                  status === "success"
+                    ? "bg-green-600 hover:bg-green-700"
+                    : status === "error"
+                    ? "bg-red-600 hover:bg-red-700"
+                    : "btn-primary"
+                }`}
+                whileHover={{ scale: status === "loading" ? 1 : 1.02 }}
+                whileTap={{ scale: status === "loading" ? 1 : 0.98 }}
+                disabled={status === "loading"}
               >
-                {isSubmitted ? (
+                {status === "loading" ? (
+                  <>
+                    <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                    Invio in corso...
+                  </>
+                ) : status === "success" ? (
                   <>
                     <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                     Messaggio Inviato!
+                  </>
+                ) : status === "error" ? (
+                  <>
+                    <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+                    Errore - Riprova
                   </>
                 ) : (
                   <>
@@ -236,6 +318,11 @@ export default function Contact() {
                   </>
                 )}
               </motion.button>
+
+              {/* Error message */}
+              {status === "error" && errorMessage && (
+                <p className="text-red-400 text-sm text-center mt-2">{errorMessage}</p>
+              )}
             </form>
 
             {/* LinkedIn CTA */}

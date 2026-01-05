@@ -16,6 +16,10 @@ const lexend = Lexend({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.studiogc.info"),
+  icons: {
+    icon: "/StudiogLogo.png",
+    apple: "/StudiogLogo.png",
+  },
   title: {
     default: "Studio G s.n.c. | Progettazione Meccanica 3D ed Elettronica",
     template: "%s | Studio G",
@@ -144,8 +148,6 @@ export default function RootLayout({
   return (
     <html lang="it" className={`${sora.variable} ${lexend.variable}`}>
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#0a0f1a" />
         <script

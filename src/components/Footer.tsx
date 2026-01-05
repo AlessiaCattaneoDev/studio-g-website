@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowUp, Linkedin } from "lucide-react";
+import Image from "next/image";
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -23,18 +24,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 sm:gap-10 md:gap-12 mb-10 sm:mb-12 md:mb-16">
           {/* Brand */}
           <div className="sm:col-span-2 md:col-span-1">
-            <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/30">
-                <span className="text-white font-bold text-lg sm:text-xl font-[var(--font-display)]">
-                  G
-                </span>
-              </div>
-              <div>
-                <p className="text-white font-semibold text-base sm:text-lg">Studio G</p>
-                <p className="text-slate-500 text-xs uppercase tracking-widest">
-                  s.n.c.
-                </p>
-              </div>
+            <div className="mb-4 sm:mb-6">
+              <Image
+                src="/StudiogLogo.png"
+                alt="Studio G - Progettazione Meccanica ed Elettronica"
+                width={220}
+                height={110}
+                className="h-16 sm:h-20 md:h-24 w-auto object-contain"
+              />
             </div>
             <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
               Progettazione Meccanica in 3D ed Elettronica. Esperienza decennale

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ChevronDown, Cog, Cpu, Zap } from "lucide-react";
+import Image from "next/image";
 
 export default function Hero() {
   return (
@@ -134,7 +135,7 @@ export default function Hero() {
             Contattaci
           </motion.a>
         </motion.div>
-        <br />Informazioni di contatto
+        <br />
         {/* Stats */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}

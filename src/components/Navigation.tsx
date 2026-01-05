@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import Image from "next/image";
 
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -49,23 +50,18 @@ export default function Navigation() {
           {/* Logo */}
           <motion.a
             href="#home"
-            className="flex items-center gap-2 sm:gap-3 group"
+            className="flex items-center group"
             whileHover={{ scale: 1.02 }}
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/30 group-hover:shadow-blue-500/50 transition-shadow">
-              <span className="text-white font-bold text-lg sm:text-xl font-[var(--font-display)]">
-                G
-              </span>
-            </div>
-            <div className="hidden sm:block">
-              <p className="text-white font-semibold text-lg tracking-wide">
-                Studio G
-              </p>
-              <p className="text-slate-400 text-xs tracking-widest uppercase">
-                Progettazione
-              </p>
-            </div>
+            <Image
+              src="/StudiogLogo.png"
+              alt="Studio G - Progettazione Meccanica ed Elettronica"
+              width={200}
+              height={100}
+              className="h-14 sm:h-16 md:h-20 w-auto object-contain"
+              priority
+            />
           </motion.a>
 
           {/* Desktop Navigation */}
